@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Correção de Sódio</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+    <style>
+        body {
+            width: 400px;
+            margin: auto;
+            background: #eee;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: #666;
+        }
+        h1 {
+            
+            font-size: 30px;
+            background-color: darkblue;
+            color: white;
+            padding: 5px 15px;
+            margin: 0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            padding-top: 25px;
+        }
+        label, input, select {
+            width: 80%;
+            margin: 0 10%;
+            box-sizing:border-box;
+            font-size: 1.2em;
+        }
+        br {
+            margin: 10px;
+        }
+        #painel_resultado {
+            display: none;
+        }
+        button {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            margin-left: 10%;
+            padding: 15px 25px;
+            background-color: rgb(255, 154, 53);
+            border: 0;
+            font-size: 1.2em;
+            border-radius: 25px;
+            -webkit-box-shadow: 5px 5px 15px -3px #000000; 
+            box-shadow: 5px 5px 15px -3px #000000;
+        }
+        p {
+            margin: 0 10%;
+        }
+
+        #resultado {
+            color: black;
+            font-weight: bold;
+            font-size: large;
+        }
+
+        #license {
+            margin-top: 500px;
+            font-size: 8px;
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>Correção de Sódio</h1>
+
+    <div id="tudo">
+        <label>Sódio do paciente (mEq)</label>
+        <input type="number" id="sodio_paciente">
+
+        <br>
+
+        <label>Soluções</label>
+        <select id="sodio_solucao">
+            <option value="511">NaCl 3% (Salgadão)</option>
+            <option value="154">SF 0,9% (Soro fisiológico)</option>
+            <option value="130">RL (Ringer lactato)</option>
+            <option value="77">SF 0,45% (Soro ao meio)</option>
+            <option value="0">SG 5% (Soro glicosado)</option>
+        </select>
+
+        <br>
+
+        <label>Sexo e idade</label>
+        <select id="sexo_idade">
+            <option value="0.6">Masculino &lt; 65</option>
+            <option value="0.5">Masculino &gt;= 65</option>
+            <option value="0.5">Feminino &lt; 65</option>
+            <option value="0.45">Feminino &gt;= 65</option>
+        </select>
+        
+        <br>
+
+        <label>Peso (kg)</label>
+        <input type="number" id="peso">
+
+        <br>
+
+        <button id="calcular">Calcular</button>
+
+        <br>
+
+        <p id="painel_resultado">
+            1 L de <span id="sodio_solucao_resultado"></span>
+            vai variar aproximadamente <span id="resultado"></span> 
+            mEq da concentação de sódio do paciente.
+            <br>    
+            <br>
+            Tabela de diluição:
+            <br>
+            ⚈ 1 litro de NaCl 3% : <br>
+            Soro fisiológico 0,9% 890ml + NaCl 20% 110ml
+            <br>
+            ⚈ 1 litro de SF 0,45% : <br>
+            Água destilada 980ml + NaCl 20% 20ml
+            <br><br>
+            Esta ferramenta é apenas para referência. Sendo a correção de sódio a critério do médico.
+        </p>
+
+        <p id="license">
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
+        </p>
+    </div>
+   
+    <script>
+        var calcular = document.getElementById("calcular")
+        var resultado = document.getElementById("resultado")
+        var painel_resultado = document.getElementById("painel_resultado")
+        var sodio_solucao_resultado = document.getElementById("sodio_solucao_resultado")
+
+        calcular.addEventListener("click", () => {
+
+            var sodio_paciente = getFloat("sodio_paciente")
+            var sodio_solucao = getFloat("sodio_solucao")
+            var sexo_idade = getFloat("sexo_idade")
+            var peso = getFloat("peso")
+
+            var act = sexo_idade * peso
+            var valor = (sodio_solucao - sodio_paciente) / (act + 1)
+
+            resultado.innerText = valor.toFixed(2)
+            sodio_solucao_resultado.innerText = getText("sodio_solucao")
+            painel_resultado.style.display = "block"
+        })
+
+        function getFloat(id) {
+            return parseFloat(document.getElementById(id).value)
+        }
+
+        function getText(id) {
+            var select = document.getElementById(id)
+            return select.options[select.selectedIndex].text.trim();
+        }
+
+        
+    </script>
+</body>
+</html>
